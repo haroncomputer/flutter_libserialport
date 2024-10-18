@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
-void main() => runApp(ExampleApp());
+void main() => runApp(const ExampleApp());
 
 class ExampleApp extends StatefulWidget {
+  const ExampleApp({Key? key}) : super(key: key);
+
   @override
   _ExampleAppState createState() => _ExampleAppState();
 }
@@ -26,7 +28,7 @@ extension IntToString on int {
 }
 
 class _ExampleAppState extends State<ExampleApp> {
-  var availablePorts = [];
+  List availablePorts = [];
 
   @override
   void initState() {
@@ -49,30 +51,33 @@ class _ExampleAppState extends State<ExampleApp> {
           child: ListView(
             children: [
               for (final address in availablePorts)
-                Builder(builder: (context) {
-                  final port = SerialPort(address);
-                  return ExpansionTile(
-                    title: Text(address),
-                    children: [
-                      CardListTile('Description', port.description),
-                      CardListTile('Transport', port.transport.toTransport()),
-                      CardListTile('USB Bus', port.busNumber?.toPadded()),
-                      CardListTile('USB Device', port.deviceNumber?.toPadded()),
-                      CardListTile('Vendor ID', port.vendorId?.toHex()),
-                      CardListTile('Product ID', port.productId?.toHex()),
-                      CardListTile('Manufacturer', port.manufacturer),
-                      CardListTile('Product Name', port.productName),
-                      CardListTile('Serial Number', port.serialNumber),
-                      CardListTile('MAC Address', port.macAddress),
-                    ],
-                  );
-                }),
+                Builder(
+                  builder: (context) {
+                    final port = SerialPort(address as String);
+                    return ExpansionTile(
+                      title: Text(address),
+                      children: [
+                        CardListTile('Description', port.description),
+                        CardListTile('Transport', port.transport.toTransport()),
+                        CardListTile('USB Bus', port.busNumber?.toPadded()),
+                        CardListTile(
+                            'USB Device', port.deviceNumber?.toPadded(),),
+                        CardListTile('Vendor ID', port.vendorId?.toHex()),
+                        CardListTile('Product ID', port.productId?.toHex()),
+                        CardListTile('Manufacturer', port.manufacturer),
+                        CardListTile('Product Name', port.productName),
+                        CardListTile('Serial Number', port.serialNumber),
+                        CardListTile('MAC Address', port.macAddress),
+                      ],
+                    );
+                  },
+                ),
             ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.refresh),
           onPressed: initPorts,
+          child: const Icon(Icons.refresh),
         ),
       ),
     );
@@ -80,10 +85,9 @@ class _ExampleAppState extends State<ExampleApp> {
 }
 
 class CardListTile extends StatelessWidget {
+  const CardListTile(this.name, this.value, {Key? key}) : super(key: key);
   final String name;
   final String? value;
-
-  CardListTile(this.name, this.value);
 
   @override
   Widget build(BuildContext context) {
